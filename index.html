@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD: Manajemen Server VPS AWS - Terisi</title>
+    <style>
+        :root {
+            --primary: #232f3e;
+            --accent: #ff9900;
+            --border: #cbd5e1;
+            --bg-light: #f8fafc;
+            --text-dark: #1e293b;
+            --text-muted: #475569;
+            --answer-bg: #eff6ff;
+            --answer-text: #1d4ed8;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #e2e8f0;
+            color: var(--text-dark);
+            line-height: 1.5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+        header {
+            border-bottom: 3px solid var(--accent);
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        header h1 {
+            color: var(--primary);
+            font-size: 24px;
+            font-weight: 700;
+        }
+        .badge {
+            background: var(--primary);
+            color: var(--accent);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .identitas-box {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-left: 5px solid var(--primary);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px 30px;
+        }
+        .identitas-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .identitas-item label {
+            font-weight: 700;
+            min-width: 90px;
+            color: var(--primary);
+        }
+        .identitas-item input {
+            flex: 1;
+            border: none;
+            border-bottom: 1.5px dashed #94a3b8;
+            background: transparent;
+            padding: 4px 6px;
+            font-family: inherit;
+            font-size: 14px;
+            color: var(--answer-text);
+            font-weight: 600;
+        }
+        .fase {
+            margin-bottom: 35px;
+        }
+        .fase-title {
+            background: var(--primary);
+            color: #ffffff;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 17px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .fase-title span {
+            background: var(--accent);
+            color: var(--primary);
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .desc {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 16px;
+        }
+        .card {
+            border: 1px solid var(--border);
+            border-top: 4px solid var(--primary);
+            border-radius: 8px;
+            padding: 16px;
+            background: #ffffff;
+        }
+        .card h3 {
+            font-size: 15px;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        .answer-block {
+            background: var(--answer-bg);
+            border-left: 3px solid var(--answer-text);
+            padding: 10px 12px;
+            border-radius: 4px;
+            font-size: 13.5px;
+            color: var(--text-dark);
+        }
+        .checklist {
+            list-style: none;
+            margin-bottom: 18px;
+        }
+        .checklist li {
+            padding: 8px 12px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+        .checklist input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #16a34a;
+        }
+        .alert-box {
+            background: #fffbeb;
+            border: 1px solid #fcd34d;
+            border-left: 5px solid var(--accent);
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 13.5px;
+        }
+        .alert-box strong.title {
+            color: #92400e;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .inline-input-row {
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px dashed #fcd34d;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .inline-input-row input {
+            border: 1px solid #cbd5e1;
+            background: #ffffff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: var(--answer-text);
+            font-weight: 600;
+            width: 240px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 18px;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            text-align: left;
+        }
+        th {
+            background: var(--primary);
+            color: #ffffff;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background: var(--bg-light);
+        }
+        .ans-pill {
+            display: inline-block;
+            background: var(--answer-bg);
+            color: var(--answer-text);
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 4px;
+            border: 1px solid #bfdbfe;
+            font-family: monospace;
+        }
+        .code-box {
+            background: #0f172a;
+            color: #38bdf8;
+            padding: 14px 18px;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            margin-top: 8px;
+            overflow-x: auto;
+        }
+        .code-box span.comment {
+            color: #94a3b8;
+            display: block;
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+        .matching-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+        @media (max-width: 650px) {
+            .matching-grid, .grid-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+        .match-item {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 13.5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .match-item code {
+            background: #e2e8f0;
+            padding: 3px 7px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+        .steps-box {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 20px;
+            font-size: 14px;
+        }
+        .steps-box ol {
+            margin-left: 20px;
+            margin-bottom: 12px;
+        }
+        .metrics-box {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+        .metric-card {
+            flex: 1;
+            min-width: 220px;
+            background: var(--answer-bg);
+            border: 1px solid #bfdbfe;
+            padding: 14px;
+            border-radius: 8px;
+        }
+        .metric-card span {
+            font-size: 13px;
+            color: var(--text-muted);
+            display: block;
+        }
+        .metric-card strong {
+            font-size: 18px;
+            color: var(--answer-text);
+        }
+        .eval-box {
+            border: 1px solid var(--border);
+            border-left: 5px solid #3b82f6;
+            background: var(--bg-light);
+            padding: 18px;
+            border-radius: 8px;
+            margin-top: 25px;
+        }
+        .eval-box h4 {
+            margin-bottom: 35px;
+            color: var(--primary);
+        }
+        .ttd {
+            text-align: right;
+            font-style: italic;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+        .print-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--accent);
+            color: var(--primary);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .print-btn:hover {
+            background: #e68a00;
+        }
+        @media print {
+            body { background: #fff; padding: 0; }
+            .container { box-shadow: none; padding: 15px; max-width: 100%; }
+            .print-btn { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
+
+<div class="container">
+    <header>
+        <div>
+            <h1>LKPD: Manajemen Server VPS AWS</h1>
+            <p style="font-size: 13px; color: #64748b;">Lembar Kerja Peserta Didik • Cloud Computing & Infrastruktur Server</p>
+        </div>
+        <div class="badge">AWS Cloud Practice</div>
+    </header>
+
+    <!-- Identitas -->
+    <section class="identitas-box">
+        <div class="identitas-item">
+            <label>Nama :</label>
+            <input type="text" placeholder="Syakira Alfina Yasmin" value="">
+        </div>
+        <div class="identitas-item">
+            <label>Tanggal :</label>
+            <input type="text" value="19 November 2026">
+        </div>
+        <div class="identitas-item">
+            <label>Kelas :</label>
+            <input type="text" placeholder="XI RPL 1" value="">
+        </div>
+        <div class="identitas-item">
+            <label>Instruktur :</label>
+            <input type="text" placeholder="Pak Asep Ulumudin" value="">
+        </div>
+    </section>
+
+    <!-- Fase 1 -->
+    <section class="fase">
+        <div class="fase-title"><span>FASE 1</span> Pengenalan Konsep VPS & Cloud</div>
+        <p class="desc">Jelaskan secara singkat pemahaman Anda mengenai perbedaan layanan berikut dengan mengisi kotak yang tersedia.</p>
+        <div class="grid-cards">
+            <div class="card">
+                <h3>Shared Hosting</h3>
+                <div class="answer-block">
+                    Layanan hosting di mana banyak website berbagi satu server fisik dan sumber daya (CPU, RAM, bandwidth) yang sama. Biayanya paling murah dan mudah dikelola, namun performa terpengaruh jika trafik pengguna lain melonjak.
+                </div>
+            </div>
+            <div class="card">
+                <h3>Dedicated Server</h3>
+                <div class="answer-block">
+                    Penyewaan satu server fisik secara utuh khusus untuk satu pengguna/organisasi. Memberikan performa maksimal, keamanan tinggi, dan kontrol penuh atas perangkat keras, namun biayanya mahal dan butuh keahlian teknis tinggi.
+                </div>
+            </div>
+            <div class="card">
+                <h3>Amazon Lightsail</h3>
+                <div class="answer-block">
+                    Layanan VPS (Virtual Private Server) dari AWS yang dirancang praktis dengan paket harga tetap bulanan (bundling compute, storage, dan transfer data). Cocok untuk pemula atau aplikasi web skala kecil hingga menengah.
+                </div>
+            </div>
+            <div class="card">
+                <h3>Amazon EC2</h3>
+                <div class="answer-block">
+                    Layanan komputasi awan (IaaS) utama AWS yang menyediakan kapasitas server virtual (instance) yang sangat fleksibel dan dapat diskalakan (auto-scaling). Pengguna bebas mengatur spesifikasi CPU, RAM, jaringan, dan keamanan secara mendalam.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fase 2 -->
+    <section class="fase">
+        <div class="fase-title"><span>FASE 2</span> Persiapan dan Provisioning Server</div>
+        <p class="desc">Beri tanda centang pada kotak setelah Anda berhasil menyelesaikan setiap tahapan di konsol AWS.</p>
+        <ul class="checklist">
+            <li><input type="checkbox" checked> Mengaktifkan akun AWS dan login ke Management Console.</li>
+            <li><input type="checkbox" checked> Memilih Region AWS terdekat (misal: <code>ap-southeast-1</code> / Singapore).</li>
+            <li><input type="checkbox" checked> Memilih Amazon Machine Image (AMI), misalnya Ubuntu 22.04 LTS.</li>
+            <li><input type="checkbox" checked> Memilih Instance Type dalam batas Free Tier (misal: <code>t2.micro</code> / <code>t3.micro</code>).</li>
+        </ul>
+
+        <div class="alert-box">
+            <strong class="title">⚠️ PENTING: Manajemen Key Pair</strong>
+            Saat melakukan provisioning, AWS akan meminta Anda membuat Key Pair. File berakhiran <code>.pem</code> atau <code>.ppk</code> ini adalah "kunci rumah" server Anda. Simpan file ini di tempat yang aman. Jika hilang, Anda akan kehilangan akses ke dalam server.
+            <div class="inline-input-row">
+                <strong>Nama Key Pair yang saya buat:</strong>
+                <input type="text" value="aws-praktik-key.pem" title="Ubah sesuai nama file key pair Anda">
+            </div>
+        </div>
+    </section>
+
+    <!-- Fase 3 -->
+    <section class="fase">
+        <div class="fase-title"><span>FASE 3</span> Jaringan, Keamanan, dan Akses Server</div>
+        <p class="desc">Isi tabel Security Group di bawah ini dengan port yang benar untuk mengizinkan akses ke server web Anda.</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Tipe Akses</th>
+                    <th>Protokol</th>
+                    <th>Port Range</th>
+                    <th>Source (Sumber)</th>
+                    <th>Deskripsi / Kegunaan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>SSH</td>
+                    <td>TCP</td>
+                    <td>22</td>
+                    <td>Anywhere (0.0.0.0/0)</td>
+                    <td>Akses remote terminal</td>
+                </tr>
+                <tr>
+                    <td>HTTP</td>
+                    <td>TCP</td>
+                    <td><span class="ans-pill">80</span></td>
+                    <td>Anywhere (0.0.0.0/0)</td>
+                    <td>Akses website tanpa enkripsi</td>
+                </tr>
+                <tr>
+                    <td>HTTPS</td>
+                    <td>TCP</td>
+                    <td><span class="ans-pill">443</span></td>
+                    <td>Anywhere (0.0.0.0/0)</td>
+                    <td>Akses website aman (SSL)</td>
+                </tr>
+                <tr>
+                    <td>Custom TCP</td>
+                    <td>TCP</td>
+                    <td>8080</td>
+                    <td>My IP</td>
+                    <td>Akses panel admin khusus</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p style="font-size: 14px; font-weight: 600;">Tuliskan perintah lengkap yang Anda gunakan di terminal lokal untuk mengakses server melalui SSH:</p>
+        <div class="code-box">
+            <span class="comment"># Ganti nama file .pem dan alamat IP Publik sesuai instance EC2 Anda:</span>
+            ssh -i "aws-praktik-key.pem" ubuntu@54.255.120.45
+        </div>
+    </section>
+
+    <!-- Fase 4 -->
+    <section class="fase">
+        <div class="fase-title"><span>FASE 4</span> Konfigurasi Sistem Operasi & Web Server</div>
+        <p class="desc">Pasangkan perintah Linux berikut dengan fungsi yang tepat dengan menuliskan hurufnya.</p>
+        <div class="matching-grid">
+            <div class="match-item">
+                <span>1. <code>sudo apt update</code></span>
+                <span class="ans-pill">( C )</span>
+            </div>
+            <div class="match-item">
+                <span><strong>A.</strong> Menampilkan seluruh file termasuk yang tersembunyi.</span>
+            </div>
+            <div class="match-item">
+                <span>2. <code>sudo systemctl restart apache2</code></span>
+                <span class="ans-pill">( D )</span>
+            </div>
+            <div class="match-item">
+                <span><strong>B.</strong> Mengubah hak akses file menjadi read-only.</span>
+            </div>
+            <div class="match-item">
+                <span>3. <code>ls -la</code></span>
+                <span class="ans-pill">( A )</span>
+            </div>
+            <div class="match-item">
+                <span><strong>C.</strong> Memperbarui daftar paket repositori OS.</span>
+            </div>
+            <div class="match-item">
+                <span>4. <code>chmod 400 key.pem</code></span>
+                <span class="ans-pill">( B )</span>
+            </div>
+            <div class="match-item">
+                <span><strong>D.</strong> Memuat ulang layanan web server.</span>
+            </div>
+        </div>
+
+        <div class="steps-box">
+            <strong>Tugas Praktik Web Server:</strong>
+            <ol>
+                <li>Instal Apache atau Nginx pada server Anda (<code>sudo apt install apache2 -y</code>).</li>
+                <li>Buat file <code>index.html</code> kustom di direktori <code>/var/www/html/</code>.</li>
+                <li>Buka IP Publik server Anda di browser.</li>
+            </ol>
+            <div class="inline-input-row" style="border-top-color: #cbd5e1;">
+                <strong>Alamat IP Publik Server saya:</strong>
+                <span style="font-family: monospace; font-weight: bold;">http://</span>
+                <input type="text" value="54.255.120.45" title="Ganti dengan IP Publik EC2 Anda">
+            </div>
+        </div>
+    </section>
+
+    <!-- Fase 5 -->
+    <section class="fase">
+        <div class="fase-title"><span>FASE 5</span> Deployment Aplikasi dan Domain</div>
+        <p class="desc">Untuk mengarahkan nama domain ke IP Publik server AWS, Anda perlu mengatur DNS Record. Lengkapi tabel konfigurasi A-Record di bawah ini.</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Tipe Record</th>
+                    <th>Name / Host</th>
+                    <th>Value / Target (IP AWS)</th>
+                    <th>TTL</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>A</td>
+                    <td>@ (atau namadomain.com)</td>
+                    <td><span class="ans-pill">54.255.120.45 (IP Publik EC2)</span></td>
+                    <td>Auto / 3600</td>
+                </tr>
+                <tr>
+                    <td>A (atau CNAME)</td>
+                    <td>www</td>
+                    <td><span class="ans-pill">54.255.120.45 (atau namadomain.com)</span></td>
+                    <td>Auto / 3600</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p style="font-size: 14px; font-weight: 600; margin-bottom: 8px;">Checklist Deployment Akhir:</p>
+        <ul class="checklist">
+            <li><input type="checkbox" checked> Mengunggah file website menggunakan SFTP (FileZilla/Cyberduck) ke direktori web.</li>
+            <li><input type="checkbox" checked> Memastikan propagasi DNS selesai (domain dapat diakses di browser).</li>
+            <li><input type="checkbox" checked> Menginstal Let's Encrypt (Certbot) dan mengaktifkan HTTPS.</li>
+        </ul>
+    </section>
+
+    <!-- Fase 6 -->
+    <section class="fase">
+        <div class="fase-title"><span>FASE 6</span> Manajemen, Monitoring & Backup</div>
+        <p class="desc">Pemeliharaan server sangat penting. Gunakan AWS CloudWatch untuk melihat status server Anda dan dokumentasikan metrik saat ini.</p>
+        
+        <div class="metrics-box">
+            <div class="metric-card">
+                <span>Rata-rata CPU Utilization:</span>
+                <strong>1.45 %</strong> <small style="color:#64748b;">(Normal / Idle)</small>
+            </div>
+            <div class="metric-card">
+                <span>Status Check Failed:</span>
+                <strong>0</strong> <small style="color:#16a34a;">(2/2 Checks Passed)</small>
+            </div>
+        </div>
+
+        <div class="steps-box">
+            <strong>Langkah Backup (Snapshot):</strong>
+            <ol style="margin-bottom: 0;">
+                <li>Buka menu <strong>Volumes</strong> di konsol EC2.</li>
+                <li>Pilih Volume server Anda.</li>
+                <li>Klik <strong>Actions &gt; Create Snapshot</strong>.</li>
+                <li>Beri deskripsi dan simpan.</li>
+            </ol>
+        </div>
+
+        <div class="eval-box">
+            <h4>Catatan & Evaluasi Instruktur</h4>
+            <div class="ttd">Tanda Tangan Instruktur: ___________________________</div>
+        </div>
+    </section>
+</div>
+
+</body>
+</html>
